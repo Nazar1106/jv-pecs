@@ -13,13 +13,16 @@ import java.util.List;
 /**
  * Your implementation of MachineService.
  */
+
 public class MachineServiceImpl<T extends Machine> implements MachineService<T> {
     @SuppressWarnings("unchecked")
     @Override
-    public List<T> getAll(Class<? extends T> type) {
+    public List<T> getAll(Class<? extends Machine> type) {
         List<T> machines = new ArrayList<>();
 
-        if (Truck.class.isAssignableFrom(type)) {
+        if (type == null) {
+            return List.of();
+        } else if (Truck.class.isAssignableFrom(type)) {
             machines.addAll((List<T>) new TruckProducer().get());
         } else if (Bulldozer.class.isAssignableFrom(type)) {
             machines.addAll((List<T>) new BulldozerProducer().get());
@@ -27,7 +30,7 @@ public class MachineServiceImpl<T extends Machine> implements MachineService<T> 
             machines.addAll((List<T>) new ExcavatorProducer().get());
         }
 
-        return machines;
+        return machines.isEmpty() ? List.of() : machines;
     }
 
     @Override
