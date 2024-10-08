@@ -13,27 +13,20 @@ import java.util.List;
 /**
  * Your implementation of MachineService.
  */
-
 public class MachineServiceImpl<T extends Machine> implements MachineService<T> {
-
-    private final Machine truck = new Truck();
-    private final Machine excavator = new Excavator();
-    private final Machine bulldozer = new Bulldozer();
-
+    @SuppressWarnings("unchecked")
     @Override
-    public List<Machine> getAll(Class<? extends Machine> type) {
-        List<Machine> machines = new ArrayList<>(); // Ініціалізуємо список Machine
-        List<? extends Machine> truckProducer = new TruckProducer().get();
-        List<? extends Machine> excavatorProducer = new ExcavatorProducer().get();
-        List<? extends Machine> bulldozerProducer = new BulldozerProducer().get();
+    public List<T> getAll(Class<? extends T> type) {
+        List<T> machines = new ArrayList<>();
 
         if (Truck.class.isAssignableFrom(type)) {
-            machines.addAll(truckProducer);
+            machines.addAll((List<T>) new TruckProducer().get());
         } else if (Bulldozer.class.isAssignableFrom(type)) {
-            machines.addAll(bulldozerProducer);
+            machines.addAll((List<T>) new BulldozerProducer().get());
         } else if (Excavator.class.isAssignableFrom(type)) {
-            machines.addAll(excavatorProducer);
+            machines.addAll((List<T>) new ExcavatorProducer().get());
         }
+
         return machines;
     }
 
@@ -44,12 +37,8 @@ public class MachineServiceImpl<T extends Machine> implements MachineService<T> 
 
     @Override
     public void startWorking(List<? extends Machine> machines) {
-        if (machines.contains(truck)) {
-            truck.doWork();
-        } else if (machines.contains(excavator)) {
-            excavator.doWork();
-        } else if (machines.contains(bulldozer)) {
-            bulldozer.doWork();
+        for (Machine machine : machines) {
+            machine.doWork();
         }
     }
 }
